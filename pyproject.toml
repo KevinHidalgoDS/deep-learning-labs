@@ -12,7 +12,7 @@ dependencies = [
     "scikit-optimize",
     "seaborn", "pandas-stubs", "scipy-stubs", "tabulate",
     "plotly", "pydantic", "tensorflow", "folium", "torch",
-    "pyarrow", "openpyxl"
+    "pyarrow", "openpyxl", "keras_tuner", "tensorboard"
 ]
 
 [project.optional-dependencies]

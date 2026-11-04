@@ -1,19 +1,18 @@
-import copy
-import json
 import os
 import random
 import sys
 import time
 import urllib.request
+from pathlib import Path
 
+import keras_tuner as kt
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from IPython.display import display  # mostrar tablas (Jupyter ya lo trae; así VS Code no lo marca)
-from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, confusion_matrix
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from src.config import PROJECT_PATH
 from src.utils import logger as log
+from tensorflow import keras
+from tensorflow.keras import layers
