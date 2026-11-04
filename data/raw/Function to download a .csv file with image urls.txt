@@ -1,0 +1,30 @@
+// Function to download a .csv file with the URLs of the images
+const downloadCSV = (data, filename) => {
+  const csvContent = "data:text/csv;charset=utf-8," 
+    + data.map(e => e.join(",")).join("\n");  // Create CSV content
+
+  const encodedUri = encodeURI(csvContent);  // Encode as URI
+  const link = document.createElement("a");  // Create a link element
+  link.setAttribute("href", encodedUri);  // Set link href to the URI
+  link.setAttribute("download", filename);  // Set download filename
+  document.body.appendChild(link);  // Append the link to the document
+  link.click();  // Trigger the download
+  document.body.removeChild(link);  // Clean up the document
+};
+
+// Get all image elements on the page
+let images = document.querySelectorAll('img');
+
+// Filter out valid image URLs (src starts with 'http' and not empty)
+let imageUrls = Array.from(images)
+  .map(img => img.src)
+  .filter(src => src.startsWith('http'));
+
+// Prepare the data for CSV
+let csvData = [["Image URL"]];  // CSV header
+imageUrls.forEach(url => csvData.push([url]));
+
+// Download the CSV file
+downloadCSV(csvData, "image_urls.csv");
+
+console.log(`${imageUrls.length} image URLs saved to image_urls.csv`);

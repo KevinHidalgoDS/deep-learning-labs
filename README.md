@@ -17,7 +17,7 @@ como CNNs, GANs, RNNs, GNNs y Transformers/LLMs.
 
 ## Informacion del Docente
 
-* **Profesor:** John R. Ballesteros, Ph.D.  
+* **Profesor:** John R. Ballesteros, Ph.D.
   * **Formacion:** Ph.D. en Informatica, MSc. en Geoinformatica, Ingeniero Geologo.
 
 ---
@@ -229,3 +229,4 @@ Sede Medellín**.
 favor, asegúrate de referenciar adecuadamente la literatura o los fragmentos de código reutilizados
 en tus módulos u optimizadores.
 
+<!-- pandoc "D:\deep-learning-labs\docs\follow_up\FollowUp_2 - DNNs_1039460852.md" -o "D:\deep-learning-labs\docs\follow_up\FollowUp_2 - DNNs_1039460852.docx" --citeproc -->
