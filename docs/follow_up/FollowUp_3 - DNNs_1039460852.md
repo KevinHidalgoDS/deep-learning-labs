@@ -77,6 +77,8 @@ Docente: John R. Ballesteros
 - [A. Regression and Classification with WEKA](#a-regression-and-classification-with-weka)
   - [1. Descargue WEKA](#1-descargue-weka)
 - [B. Intriguing properties of neural networks](#b-intriguing-properties-of-neural-networks)
+  - [Read the following paper and make some conclusions: Intriguing properties of neural networks](#read-the-following-paper-and-make-some-conclusions-intriguing-properties-of-neural-networks)
+  - [Visit this web page:](#visit-this-web-page)
 - [C. Regression and Classification with WEKA](#c-regression-and-classification-with-weka)
   - [1. Create your own dataset for image classification. Use your dataset for making an image classification model](#1-create-your-own-dataset-for-image-classification-use-your-dataset-for-making-an-image-classification-model)
   - [2. Create your own dataset for detection or semantic segmentation using open source and stand alone software:](#2-create-your-own-dataset-for-detection-or-semantic-segmentation-using-open-source-and-stand-alone-software)
@@ -842,14 +844,232 @@ generada.
 
 # B. Intriguing properties of neural networks
 
-- Read the following paper and make some conclusions:
-  [Intriguing properties of neural networks](https://arxiv.org/abs/1312.6199)
-- Visit this web page:
-  [https://transcranial.github.io/keras-js/#/inception-v3](https://transcranial.github.io/keras-js/#/inception-v3)
-  Upload your own image and its attack to https://imgur.com/ or to Github. Enter the provided
-  images: cat.png and cat_attack.png using different pre-trained models and report the results.
-  [https://github.com/jrballesteros/adversarial_attacks](https://github.com/jrballesteros/adversarial_attacks)
-  ![pig confuso][pig]
+## Read the following paper and make some conclusions: [Intriguing properties of neural networks](https://arxiv.org/abs/1312.6199)
+
+<!-- Los Puntos Ciegos de la IA: Los Hallazgos Más Contraintuitivos sobre Redes Neuronales Profundas
+
+La Ilusión de la Infalibilidad de la IA
+
+En los últimos años, las redes neuronales profundas han alcanzado el estado del arte en tareas complejas de reconocimiento de voz y visión por computadora. Debido a su extraordinaria precisión en clasificaciones del mundo real, tendemos a asumir instintivamente que estos modelos "ven" y procesan el entorno de manera análoga a la percepción humana. Confiamos en que sus representaciones internas han desentrañado la estructura lógica subyacente de los datos.
+
+Sin embargo, detrás de esta fachada de alto rendimiento se esconde una realidad geométrica desconcertante. La enorme capacidad expresiva de las redes profundas, optimizada mediante algoritmos de retropropagación (backpropagation), genera mapeos de entrada-salida que obedecen a principios matemáticos profundamente contraintuitivos para la intuición humana.
+
+Un estudio fundamental desarrollado por Christian Szegedy y su equipo en Google, NYU y la Universidad de Montreal demostró que las redes neuronales operan mediante representaciones hiperespaciales distribuidas y poseen "puntos ciegos" intrínsecos: discontinuidades críticas capaces de cegar por completo al sistema ante perturbaciones matemáticas diminutas. -->
+
+1. Las neuronas individuales no tienen el significado "sagrado" que creíamos: El espacio vs. la
+   unidad
+
+Durante años, la literatura especializada asumió que las unidades o neuronas individuales de las
+capas superiores de una red codificaban características semánticas aisladas y bien definidas. Bajo
+esta premisa tradicional, se buscaban imágenes que maximizaran la activación de una neurona
+específica en la base natural e_i, asumiendo la existencia de coordenadas dedicadas a conceptos
+como "caras", "flores" o "perros".
+
+Los experimentos de Szegedy et al. desmintieron categóricamente este supuesto. Al comparar las
+imágenes que maximizan la activación en la base natural de una neurona con aquellas que maximizan
+la activación a lo largo de proyecciones o direcciones lineales completamente aleatorias ($v \in
+\mathbb{R}^n$), descubrieron que las combinaciones aleatorias son tan interpretables semánticamente
+como las unidades individuales.
+
+Esto demuestra que la red no desacopla los factores de variación del mundo real en coordenadas o
+ejes independientes. La información semántica de alto nivel no habita en neuronas aisladas, sino
+que se encuentra distribuida a lo largo de todo el espacio de activación.
+
+```text
+"First, we find that there is no distinction between individual high level units and random linear
+combinations of high level units... It suggests that it is the space, rather than the individual
+units, that contains the semantic information in the high layers of neural networks."
+
+(En primer lugar, encontramos que no existe distinción entre las unidades individuales de alto
+nivel y las combinaciones lineales aleatorias de unidades de alto nivel... Esto sugiere que es el
+espacio, y no las unidades individuales, lo que contiene la información semántica en las capas
+altas de las redes neuronales).
+```
+
+2. El "truco de la avestruz": Cambios imperceptibles que engañan por completo a la red
+
+En la visión por computadora clásica se da por sentado el principio de "suavidad local" (local
+smoothness): si aplicamos una perturbación imperceptible $\varepsilon > 0$ a una imagen $x$, la
+imagen modificada $x + r$ debería conservar su etiqueta original. En el mundo físico, un rasguño
+diminuto en la carrocería de un autobús no lo transforma en un animal.
+
+No obstante, el estudio reveló que las redes neuronales profundas quiebran este principio de forma
+drástica. Mediante una formulación de optimización acotada (L-BFGS) que minimiza $\|r\|_2$ sujeto a
+forzar una clasificación errónea $f(x+r) = l$, es posible calcular una perturbación no aleatoria y
+dirigida. Al sumar esta distorsión invisible al ojo humano, el modelo altera su predicción a
+cualquier clase objetivo arbitraria. A estas entradas distorsionadas se las denomina ejemplos
+adversarios (adversarial examples).
+
+En la práctica, estas micro-perturbaciones hacen que el modelo cambie drásticamente sus
+predicciones hacia clases insólitas como "avestruz" (ostrich), sin importar qué objeto se mostrara
+originalmente en la imagen.
+
+En la arquitectura AlexNet, por ejemplo, imágenes representativas de autobuses, aves o templos se
+transformaron visualmente en ejemplos adversarios clasificados de manera errónea como avestruces:
+
+![autobus con distorsion][autobus]
+
+Del mismo modo, imágenes de dispensadores de jabón, mantis religiosas o perros sufrieron
+alteraciones imperceptibles al ojo humano pero devastadoras para la precisión del modelo:
+
+![dispensador de jabon con distorsion][dispensador]
+
+Desde una perspectiva geométrica, los ejemplos adversarios representan "bolsones" de error de alta
+dimensión y baja probabilidad dentro de la variedad (manifold) aprendida por la red. Estos bolsones
+están densamente distribuidos en el espacio de entrada, demostrando que las funciones de mapeo
+aprendidas por retropropagación contienen discontinuidades profundas.
+
+3. Ruido Aleatorio vs. Ruido Adversario: La matemática le gana al caos (y la constante de
+   Lipschitz)
+
+Existe una diferencia fundamental entre el ruido aleatorio y las perturbaciones adversarias
+optimizadas. Mientras que el ruido aleatorio dispersa la señal en direcciones arbitrarias sin
+dirigirse a las debilidades del modelo, el ruido adversario aprovecha las discontinuidades del
+espacio de características.
+
+Es vital precisar la métrica: el ruido gaussiano se mide en desviación estándar ($\text{stddev}$),
+mientras que las perturbaciones adversarias generadas por L-BFGS se miden mediante la distorsión
+euclidiana promedio por píxel, definida formalmente como $\sqrt{\frac{\sum (x_i - x_i')^2}{n}}$.
+
+<!-- prettier-ignore -->
+| Tipo de Perturbación | Métrica y Magnitud de Distorsión | Impacto en la Precisión del Modelo |
+|:---:|:---:|:---:|
+| Ruido Gaussiano Aleatorio | Desviación estándar ($\text{stddev} = 0.1 a 0.3$) | La red conserva la precisión en un 51% o más (e incluso responde bien ante distorsiones severas), a pesar de que la imagen resulta ruidosa para el ojo humano. |
+| Perturbación Adversaria (L-BFGS) | Distorsión euclidiana promedio $\sqrt{\frac{\sum (x_i - x_i')^2}{n}} = 0.058 a 0.086$ (en MNIST) y tan baja como 0.006508 (0.65\%) en AlexNet | La precisión cae drásticamente a exactamente 0% en el modelo objetivo. |
+
+El Análisis Espectral de la Inestabilidad (Límites de Lipschitz)
+
+¿Por qué ocurre esta inestabilidad matemática? Szegedy et al. explicaron este fenómeno analizando
+la constante de Lipschitz superior de cada capa. Si denotamos la salida de una red de K capas como
+$\varphi(x) = \varphi_K(\varphi_{K-1}(...\varphi_1(x; W_1)...; W_K))$, la inestabilidad global del
+sistema está acotada por el producto de las constantes de Lipschitz individuales de cada capa:
+
+$\|\varphi(x) - \varphi(x + r)\| \le L \|r\|, \quad \text{donde} \quad L = \prod_{k=1}^{K} L_k$
+
+Para una capa rectificada (como ReLU $\max(0, x)$) o de agrupamiento (max-pooling), las funciones
+de activación no lineales son contractivas ($L_k \le 1$). Por lo tanto, la constante de Lipschitz
+de cada capa k está acotada superiormente por la norma de operador de su matriz de pesos, es decir,
+su valor singular más grande:
+
+$L_k \le \|W_k\|$
+
+En capas convolucionales, la norma del operador $\|W\|$ se deriva formalmente mediante la fórmula
+de Parseval a partir de la transformación de Fourier de sus núcleos espaciales. Si el producto de
+los valores singulares máximos a lo largo de las capas K crece sustancialmente ($L \gg 1$),
+pequeñas variaciones en la entrada $\|r\|$ se amplifican exponencialmente a través de la red. Si
+bien un límite de Lipschitz elevado no garantiza la aparición de un punto ciego, mantener límites
+de Lipschitz pequeños garantiza matemáticamente que ninguna perturbación adversaria pueda existir.
+
+4. Los puntos ciegos son "universales": Se transfieren entre diferentes arquitecturas y datos
+
+Podría hipotetizarse que los ejemplos adversarios son simplemente el resultado de un sobreajuste
+(overfitting) a un conjunto de entrenamiento específico o un artefacto aleatorio de una corrida
+particular de optimización.
+
+Sin embargo, el estudio demostró la sorprendente propiedad de generalización cruzada (cross-model y
+cross-training-set generalization): un conjunto de ejemplos adversarios generado para confundir a
+un modelo específico (por ejemplo, una red sigmoidea o una arquitectura lineal) mantiene su
+efectividad destructiva al ser probado en otra red entrenada desde cero con diferentes
+hiperparámetros, o incluso entrenada sobre un conjunto de datos completamente disjunto ($P_1$
+frente a $P_2$).
+
+```text
+"That is, if we use one neural net to generate a set of adversarial examples, we find that these
+examples are still statistically hard for another neural network even when it was trained with
+different hyperparameters or, most surprisingly, when it was trained on a different set of
+examples."
+
+(Es decir, si usamos una red neuronal para generar un conjunto de ejemplos adversarios, encontramos
+que estos ejemplos siguen siendo estadísticamente difíciles para otra red neuronal, incluso cuando
+fue entrenada con diferentes hiperparámetros o, lo que es más sorprendente, cuando fue entrenada
+con un conjunto diferente de ejemplos).
+```
+
+Este descubrimiento confirma que los ejemplos adversarios no son fallos aislados ni ruido
+aleatorio, sino propiedades intrínsecas y universales del modo en que los algoritmos basados en
+retropropagación mapean distribuciones de datos en espacios hiperdimensionales.
+
+5. Convertir el veneno en medicina: Entrenamiento adversario como regularizador
+
+En lugar de considerar estas vulnerabilidades exclusivamente como un fallo de seguridad, los
+autores demostraron que pueden utilizarse de forma constructiva mediante un enfoque análogo a la
+minería de negativos difíciles (hard-negative mining).
+
+Sin embargo, los autores descubrieron un matiz crucial: la inyección de perturbaciones puramente a
+nivel de entrada es estadísticamente ineficiente. La mejora más significativa en la regularización
+se logró al generar e inyectar ejemplos adversarios específicamente en las salidas de las capas
+intermedias e superiores, alimentando con ellos a las capas subsiguientes. Manteniendo y
+actualizando continuamente un pozo (pool) de ejemplos adversarios por capa durante el
+entrenamiento, se fuerza a la red a suavizar sus discontinuidades internas.
+
+Los resultados experimentales en el conjunto de datos MNIST utilizando una red no convolucional de
+arquitectura `100-100-10` demostraron la potencia de este enfoque:
+
+- La regularización clásica por decaimiento de pesos (weight decay) alcanzó un error de prueba del
+  1.6% (1.64%).
+- La incorporación de dropout mejoró la precisión, reduciendo el error al 1.3%.
+- El entrenamiento adversario por capas (actualizando activamente el pozo de perturbaciones en
+  capas altas) superó a los regularizadores tradicionales, reduciendo el error de prueba por debajo
+  del 1.2%.
+
+La paradoja es tan elegante como reveladora: la estrategia más efectiva para inmunizar a una red
+neuronal contra sus propios puntos ciegos es forzarla a exponerse e interactuar con ellos
+activamente a lo largo de toda su jerarquía de capas durante el aprendizaje.
+
+Conclusión: Repensando la Robustez de la Inteligencia Artificial
+
+El trabajo fundamental de Szegedy et al. redefinió los cimientos del aprendizaje profundo al
+exponer dos pilares contraintuitivos: primero, que las representaciones semánticas no están
+localizadas en neuronas individuales sino distribuidas en la totalidad del espacio de activación;
+segundo, que la aparente suavidad de las redes neuronales es una ilusión, existiendo bolsones
+hiperdimensionales de error capaces de ser explotados mediante perturbaciones imperceptibles.
+
+A medida que desplegamos modelos de aprendizaje profundo en aplicaciones críticas como vehículos
+autónomos, diagnóstico médico y sistemas de seguridad, comprender la geometría de estas
+discontinuidades y controlar sus límites espectrales de Lipschitz no es un mero ejercicio teórico,
+sino un requisito indispensable para garantizar la robustez del sistema en el mundo real.
+
+Si una modificación invisible para el ojo humano puede alterar radicalmente el juicio de una red
+neuronal, ¿estamos construyendo sistemas que realmente comprenden el mundo, o solo optimizadores
+geométricos extraordinariamente eficientes pero intrínsecamente frágiles?
+
+## Visit this web page:
+
+[https://transcranial.github.io/keras-js/#/inception-v3](https://transcranial.github.io/keras-js/#/inception-v3)
+Upload your own image and its attack to https://imgur.com/ or to Github. Enter the provided
+images: cat.png and cat_attack.png using different pre-trained models and report the results.
+[https://github.com/jrballesteros/adversarial_attacks](https://github.com/jrballesteros/adversarial_attacks)
+
+![pig confuso][pig]
+
+El procedimiento experimental se llevó a cabo mediante la plataforma interactiva Keras.js
+([https://transcranial.github.io/keras-js/#](https://transcranial.github.io/keras-js/#)),
+evaluando el comportamiento de tres arquitecturas de redes neuronales convolucionales (CNN):
+**Inception v3**, **DenseNet-121** y **SqueezeNet v1.1**. Para el análisis comparativo se
+utilizaron dos muestras de entrada: una imagen original sin alteraciones (`cat.png`) y una versión
+modificada mediante un ataque adversario (`cat_attack.png`), la cual incorpora perturbaciones
+diseñadas para inducir errores de inferencia.
+
+En cuanto a los resultados de clasificación, se observó que:
+
+- **Inception v3:** Identificó con precisión la imagen original (`cat.png`). No obstante, demostró
+  vulnerabilidad ante el ejemplo adversario (`cat_attack.png`), clasificándolo erróneamente como
+  _toaster_ (tostadora) con un nivel de confianza del 91%.
+- **DenseNet-121 y SqueezeNet v1.1:** Ambas arquitecturas mantuvieron su robustez frente a la
+  perturbación aplicada, logrando clasificar correctamente ambas imágenes como pertenecientes a la
+  categoría correspondiente al felino.
+
+Finalmente, el análisis visual de interpretabilidad mediante los filtros de mapas de calor
+(_colormap_ o mapas de activación de clase) permitió evidenciar las regiones de interés que
+fundamentaron las decisiones de cada red. Los modelos que acertaron en su predicción concentraron
+su atención en los rasgos morfológicos distintivos del sujeto, específicamente en el rostro del
+gato. Por el contrario, el mapa de activación de Inception v3 ante la imagen perturbada reveló una
+desviación en el enfoque atencional, concentrándose en el ruido del entorno circundante en lugar de
+las características principales del objeto, lo que explica la clasificación errónea.
+
+![cat inception][cat_1] ![cat attack inception][cat_attack_1] ![cat densenet][cat_2]
+![cat attack densenet][cat_attack_2] ![cat squeezenet][cat_3]
+![cat attack squeezenet][cat_attack_3]
 
 # C. Regression and Classification with WEKA
 
@@ -877,6 +1097,22 @@ produce_adversarial_images.ipynb
 
 ---
 
-<!-- [pig]: D:\deep-learning-labs\reports\figures\pig.png -->
+<!-- [pig]: D:\deep-learning-labs\reports\figures\pig.png
+[autobus]: D:\deep-learning-labs\reports\figures\autobuses.png
+[dispensador de jabon]: D:\deep-learning-labs\reports\figures\dispensador_de_jabon.png
+[cat_1]: D:\deep-learning-labs\reports\figures\cat_inception-v3_1.png
+[cat_attack_1]: D:\deep-learning-labs\reports\figures\cat_attack_inception-v3_1.png
+[cat_2]: D:\deep-learning-labs\reports\figures\cat_densenet_121_1.png
+[cat_attack_2]: D:\deep-learning-labs\reports\figures\cat_attack_densenet_121_1.png
+[cat_3]: D:\deep-learning-labs\reports\figures\cat_squeezenet_1.png
+[cat_attack_3]: D:\deep-learning-labs\reports\figures\cat_attack_squeezenet_1.png -->
 
 [pig]: reports/figures/pig.png
+[autobus]: reports/figures/autobuses.png
+[dispensador]: reports/figures/dispensador_jabon.png
+[cat_1]: reports/figures/cat_inception-v3_1.png
+[cat_attack_1]: reports/figures/cat_attack_inception-v3_1.png
+[cat_2]: reports/figures/cat_densenet_121_1.png
+[cat_attack_2]: reports/figures/cat_attack_densenet_121_1.png
+[cat_3]: reports/figures/cat_squeezenet_1.png
+[cat_attack_3]: reports/figures/cat_attack_squeezenet_1.png
