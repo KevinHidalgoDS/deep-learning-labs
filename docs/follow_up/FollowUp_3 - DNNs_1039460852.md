@@ -1036,19 +1036,19 @@ geométricos extraordinariamente eficientes pero intrínsecamente frágiles?
 ## Visit this web page:
 
 [https://transcranial.github.io/keras-js/#/inception-v3](https://transcranial.github.io/keras-js/#/inception-v3)
-Upload your own image and its attack to https://imgur.com/ or to Github. Enter the provided
-images: cat.png and cat_attack.png using different pre-trained models and report the results.
+Upload your own image and its attack to https://imgur.com/ or to Github. Enter the provided images:
+cat.png and cat_attack.png using different pre-trained models and report the results.
 [https://github.com/jrballesteros/adversarial_attacks](https://github.com/jrballesteros/adversarial_attacks)
 
 ![pig confuso][pig]
 
 El procedimiento experimental se llevó a cabo mediante la plataforma interactiva Keras.js
-([https://transcranial.github.io/keras-js/#](https://transcranial.github.io/keras-js/#)),
-evaluando el comportamiento de tres arquitecturas de redes neuronales convolucionales (CNN):
-**Inception v3**, **DenseNet-121** y **SqueezeNet v1.1**. Para el análisis comparativo se
-utilizaron dos muestras de entrada: una imagen original sin alteraciones (`cat.png`) y una versión
-modificada mediante un ataque adversario (`cat_attack.png`), la cual incorpora perturbaciones
-diseñadas para inducir errores de inferencia.
+([https://transcranial.github.io/keras-js/#](https://transcranial.github.io/keras-js/#)), evaluando
+el comportamiento de tres arquitecturas de redes neuronales convolucionales (CNN): **Inception
+v3**, **DenseNet-121** y **SqueezeNet v1.1**. Para el análisis comparativo se utilizaron dos
+muestras de entrada: una imagen original sin alteraciones (`cat.png`) y una versión modificada
+mediante un ataque adversario (`cat_attack.png`), la cual incorpora perturbaciones diseñadas para
+inducir errores de inferencia.
 
 En cuanto a los resultados de clasificación, se observó que:
 
@@ -1078,6 +1078,40 @@ las características principales del objeto, lo que explica la clasificación er
 - Visit [Teachable Machine](https://teachablemachine.withgoogle.com/) and create a simple image
   Project to classify images of angry and happy faces using your webcam. Report the results by
   screen shots.
+
+Se crean las clases `angry` y `happy` y se capturan imágenes de cada una de ellas mediante la
+cámara web. Posteriormente, se entrena un modelo de clasificación de imágenes utilizando el
+conjunto de datos generado. El modelo es evaluado con nuevas imágenes para verificar su precisión
+en la clasificación de expresiones faciales.
+
+![Teachable Machine 1][Teachable_Machine_1]
+
+Soy usuario de lentes, sin embargo, al capturar imágenes de mi rostro con diferentes expresiones no
+los usé, luego de entrenar el modelo, al probarlo con imágenes de mi rostro usando lentes, el
+modelo no logró clasificar correctamente las expresiones. Esto indica que el modelo no generalizó
+bien a variaciones en la apariencia del sujeto, como el uso de accesorios.
+
+![Teachable Machine 2][Teachable_Machine_2]
+
+La expresión facial de enojo fue clasificada correctamente, mientras que la expresión de felicidad
+no fue reconocida adecuadamente. Esto sugiere que el modelo necesita más ejemplos de la clase
+`happy` para mejorar su capacidad de generalización y precisión en la clasificación.
+
+![Teachable Machine 3][Teachable_Machine_3]
+
+Para aumentar la probabilidad de que el modelo identifique correctamente la expresión facial de
+felicidad era importante el ángulo del rostro, por lo que se capturaron imágenes de mi rostro con
+diferentes ángulos y expresiones. Esto permitió al modelo aprender a reconocer la expresión de
+felicidad desde distintas perspectivas, mejorando así su desempeño en la clasificación.
+
+![Teachable Machine 4][Teachable_Machine_4]
+
+En esta última imagen se muestra una expresión de enojo con lentes, esta vez el modelo estuvo más
+cerca de 50-50 mostrando la necesidad de más ejemplos de ambas clases con accesorios como lentes
+para mejorar la precisión del modelo en la clasificación de expresiones faciales.
+
+![Teachable Machine 5][Teachable_Machine_5]
+
 - Do the same but this time create images of two or three type of sounds like seen in class. Report
   by screen shots.
 
@@ -1085,10 +1119,15 @@ las características principales del objeto, lo que explica la clasificación er
 
 - A Detection Dataset: Run the open source software called LabelImg.exe shown during the class and
   label different images to produce a detection dataset. Use at least 5 image examples.
+
+![aves][labellmg_1]
+
 - A Segmentation Dataset: Run the open source software called PixelAnnotation.exe shown during the
   class and label different images to produce a Segmentation dataset. Use at least 5 image
   examples. See a tutorial of the PixelAnnotation tool in the following video:
   [https://www.youtube.com/watch?v=tX-xcg5wY4U](https://www.youtube.com/watch?v=tX-xcg5wY4U)
+
+![PixelAnnotation fail][pixel_fail]
 
 # Bonus
 
@@ -1097,7 +1136,7 @@ produce_adversarial_images.ipynb
 
 ---
 
-<!-- [pig]: D:\deep-learning-labs\reports\figures\pig.png
+[pig]: D:\deep-learning-labs\reports\figures\pig.png
 [autobus]: D:\deep-learning-labs\reports\figures\autobuses.png
 [dispensador de jabon]: D:\deep-learning-labs\reports\figures\dispensador_de_jabon.png
 [cat_1]: D:\deep-learning-labs\reports\figures\cat_inception-v3_1.png
@@ -1105,9 +1144,16 @@ produce_adversarial_images.ipynb
 [cat_2]: D:\deep-learning-labs\reports\figures\cat_densenet_121_1.png
 [cat_attack_2]: D:\deep-learning-labs\reports\figures\cat_attack_densenet_121_1.png
 [cat_3]: D:\deep-learning-labs\reports\figures\cat_squeezenet_1.png
-[cat_attack_3]: D:\deep-learning-labs\reports\figures\cat_attack_squeezenet_1.png -->
+[cat_attack_3]: D:\deep-learning-labs\reports\figures\cat_attack_squeezenet_1.png
+[Teachable_Machine_1]: D:\deep-learning-labs\reports\figures\Opera_Instantánea_2026-11-12_192341_teachablemachine.withgoogle.com.png
+[Teachable_Machine_2]: D:\deep-learning-labs\reports\figures\Opera_Instantánea_2026-11-12_192435_teachablemachine.withgoogle.com.png
+[Teachable_Machine_3]: D:\deep-learning-labs\reports\figures\Opera_Instantánea_2026-11-12_192528_teachablemachine.withgoogle.com.png
+[Teachable_Machine_4]: D:\deep-learning-labs\reports\figures\Opera_Instantánea_2026-11-12_192609_teachablemachine.withgoogle.com.png
+[Teachable_Machine_5]: D:\deep-learning-labs\reports\figures\Opera_Instantánea_2026-11-12_192705_teachablemachine.withgoogle.com.png
+[labellmg_1]: D:\deep-learning-labs\reports\figures\labellmg_1.png
+[pixel_fail]: D:\deep-learning-labs\reports\figures\Pixelfail.png
 
-[pig]: reports/figures/pig.png
+<!-- [pig]: reports/figures/pig.png
 [autobus]: reports/figures/autobuses.png
 [dispensador]: reports/figures/dispensador_jabon.png
 [cat_1]: reports/figures/cat_inception-v3_1.png
@@ -1116,3 +1162,15 @@ produce_adversarial_images.ipynb
 [cat_attack_2]: reports/figures/cat_attack_densenet_121_1.png
 [cat_3]: reports/figures/cat_squeezenet_1.png
 [cat_attack_3]: reports/figures/cat_attack_squeezenet_1.png
+[Teachable_Machine_1]:
+  reports/figures/Opera_Instantánea_2026-11-12_192341_teachablemachine.withgoogle.com.png
+[Teachable_Machine_2]:
+  reports/figures/Opera_Instantánea_2026-11-12_192435_teachablemachine.withgoogle.com.png
+[Teachable_Machine_3]:
+  reports/figures/Opera_Instantánea_2026-11-12_192528_teachablemachine.withgoogle.com.png
+[Teachable_Machine_4]:
+  reports/figures/Opera_Instantánea_2026-11-12_192609_teachablemachine.withgoogle.com.png
+[Teachable_Machine_5]:
+  reports/figures/Opera_Instantánea_2026-11-12_192705_teachablemachine.withgoogle.com.png
+[labellmg_1]: reports/figures/labellmg_1.png
+[pixel_fail]: reports/figures/Pixelfail.png -->
