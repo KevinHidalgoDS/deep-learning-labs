@@ -13,7 +13,7 @@ dependencies = [
     "seaborn", "pandas-stubs", "scipy-stubs", "tabulate",
     "plotly", "pydantic", "tensorflow", "folium", "torch",
     "pyarrow", "openpyxl", "keras_tuner", "tensorboard",
-    "tqdm"
+    "tqdm", "torch-vision"
 ]
 
 [project.optional-dependencies]
