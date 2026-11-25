@@ -347,12 +347,6 @@ grupo tiene mayor precisión sin respuestas esperadas.
 
 <!-- ¿Por qué crees que los Transformers son mejores para la misma tarea? -->
 
-Transformers: la autoatencion puede relacionar palabras distantes y permite paralelizar el
-entrenamiento, a diferencia del procesamiento secuencial de una LSTM. Con suficientes datos y
-recursos pueden capturar mejor el contexto, pero no son necesariamente mejores en este corpus
-pequeno; haria falta entrenar y evaluar ambos modelos con los mismos datos de prueba para
-comprobarlo.
-
 Los Transformers pueden ser más eficaces para predecir la siguiente palabra porque usan
 autoatención para relacionar palabras de distintas posiciones dentro del contexto. Esto les permite
 capturar dependencias lejanas sin procesar la entrada palabra por palabra, como lo hace una LSTM.
