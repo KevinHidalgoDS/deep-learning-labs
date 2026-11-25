@@ -177,15 +177,21 @@ este caso, ambos conjuntos de parámetros producen resultados muy similares.
 
 <!-- Modifica el tamaño de la capa LSTM (de 50 a 30 y a 10), observa los resultados en el gráfico y comenta al respecto. -->
 
-**La LSTM reproduce bien la onda seno**, aunque presenta pequeñas diferencias en la amplitud y la posición de algunos picos y valles.
+**La LSTM reproduce bien la onda seno**, aunque presenta pequeñas diferencias en la amplitud y la
+posición de algunos picos y valles.
 
 ### Gráficas
 
-- **Predicciones:** la curva naranja sigue de cerca los valores reales en verde. En los máximos y mínimos, la predicción sobrepasa ligeramente la amplitud real. El **MAE de 0.021** y el **R² de 0.9989** confirman un ajuste muy cercano.
-- **Pérdida:** el MSE de entrenamiento baja rápidamente entre las épocas 1 y 2 y permanece muy bajo en la 3. La pérdida de validación también es baja y disminuye; no se observa una divergencia que indique sobreajuste en estas tres épocas. La pérdida de entrenamiento inicial puede ser mayor porque se promedia mientras los pesos aún se están actualizando, mientras la validación se calcula al finalizar la época.
+- **Predicciones:** la curva naranja sigue de cerca los valores reales en verde. En los máximos y
+  mínimos, la predicción sobrepasa ligeramente la amplitud real. El **MAE de 0.021** y el **R² de
+  0.9989** confirman un ajuste muy cercano.
+- **Pérdida:** el MSE de entrenamiento baja rápidamente entre las épocas 1 y 2 y permanece muy bajo
+  en la 3. La pérdida de validación también es baja y disminuye; no se observa una divergencia que
+  indique sobreajuste en estas tres épocas. La pérdida de entrenamiento inicial puede ser mayor
+  porque se promedia mientras los pesos aún se están actualizando, mientras la validación se
+  calcula al finalizar la época.
 
-![pto 3 prediccion][pto_3_lstm_p]
-![pto 3 loss][pto_3_lstm_l]
+![pto 3 prediccion][pto_3_lstm_p] ![pto 3 loss][pto_3_lstm_l]
 
 ### Parámetros
 
@@ -199,7 +205,6 @@ este caso, ambos conjuntos de parámetros producen resultados muy similares.
 | `units=30` | La capa tiene 30 unidades LSTM, lo que le da mayor capacidad que la configuración anterior de 5 unidades. |
 | `epochs=3` | El modelo recorre tres veces los datos de entrenamiento; en esta ejecución aprende rápidamente. |
 
-
 <!-- prettier-ignore -->
 | _Métrica_   | _Valor_ | _Interpretación_                   |
 |:---:|:---:|:---:|
@@ -210,19 +215,27 @@ este caso, ambos conjuntos de parámetros producen resultados muy similares.
 | MAPE (%)  | 12.343703 | Menor es mejor |
 | sMAPE (%) |  9.731429 | Menor es mejor |
 
-El **MAPE de 12.34 %** debe interpretarse con cautela: los valores reales cercanos a cero pueden inflar los errores porcentuales, aunque el error absoluto sea pequeño.
+El **MAPE de 12.34 %** debe interpretarse con cautela: los valores reales cercanos a cero pueden
+inflar los errores porcentuales, aunque el error absoluto sea pequeño.
 
-Frente al experimento anterior, el MAE fue mayor (**0.021 frente a 0.011**), pero también cambiaron el número de muestras, la división y las épocas. Por tanto, no se puede atribuir esa diferencia solamente al aumento de unidades. Además, el mismo conjunto de prueba se usa como validación durante el entrenamiento.
+Frente al experimento anterior, el MAE fue mayor (**0.021 frente a 0.011**), pero también cambiaron
+el número de muestras, la división y las épocas. Por tanto, no se puede atribuir esa diferencia
+solamente al aumento de unidades. Además, el mismo conjunto de prueba se usa como validación
+durante el entrenamiento.
 
-**La LSTM de 10 unidades aprendió la forma de la onda seno**, aunque todavía presenta pequeñas diferencias respecto a los valores reales.
+**La LSTM de 10 unidades aprendió la forma de la onda seno**, aunque todavía presenta pequeñas
+diferencias respecto a los valores reales.
 
 ### Gráficas
 
-- **Predicciones:** la curva naranja sigue la periodicidad de la curva verde. Se observa una ligera sobreestimación en los máximos y diferencias en algunos tramos de subida y bajada.
-- **Pérdida:** tanto el MSE de entrenamiento como el de validación disminuyen durante las tres épocas. No se observa una divergencia indicativa de sobreajuste en esta ejecución. La pérdida de validación es menor, en parte porque se calcula al finalizar cada época, mientras la de entrenamiento se promedia durante las actualizaciones.
+- **Predicciones:** la curva naranja sigue la periodicidad de la curva verde. Se observa una ligera
+  sobreestimación en los máximos y diferencias en algunos tramos de subida y bajada.
+- **Pérdida:** tanto el MSE de entrenamiento como el de validación disminuyen durante las tres
+  épocas. No se observa una divergencia indicativa de sobreajuste en esta ejecución. La pérdida de
+  validación es menor, en parte porque se calcula al finalizar cada época, mientras la de
+  entrenamiento se promedia durante las actualizaciones.
 
-![pto 3-2 prediccion][pto_3_2_lstm_p]
-![pto 3-2 loss][pto_3_2_lstm_l]
+![pto 3-2 prediccion][pto_3_2_lstm_p] ![pto 3-2 loss][pto_3_2_lstm_l]
 
 ### Parámetros
 
@@ -248,11 +261,17 @@ Frente al experimento anterior, el MAE fue mayor (**0.021 frente a 0.011**), per
 | MAPE (%)  | 16.210677 | Menor es mejor |
 | sMAPE (%) | 12.859084 | Menor es mejor  |
 
-El **MAE de 0.0359** indica el error absoluto medio; el **RMSE de 0.0446** penaliza más los errores grandes. El **MSE es 0.001988** y el **R² es 0.9960**, por lo que las predicciones explican aproximadamente el 99.6 % de la variabilidad observada.
+El **MAE de 0.0359** indica el error absoluto medio; el **RMSE de 0.0446** penaliza más los errores
+grandes. El **MSE es 0.001988** y el **R² es 0.9960**, por lo que las predicciones explican
+aproximadamente el 99.6 % de la variabilidad observada.
 
-El **MAPE es 16.21 %** y el **sMAPE 12.86 %**. Conviene interpretarlos con cautela: los valores de la onda cercanos a cero pueden inflar los errores porcentuales.
+El **MAPE es 16.21 %** y el **sMAPE 12.86 %**. Conviene interpretarlos con cautela: los valores de
+la onda cercanos a cero pueden inflar los errores porcentuales.
 
-En comparación con la ejecución anterior de **30 unidades**, que mantuvo los demás parámetros indicados, esta tuvo mayor MAE: **0.0359 frente a 0.0210**. Es una comparación de una sola ejecución; se necesitarían varias semillas para valorar si la diferencia es consistente. Además, el conjunto de prueba se usa también como validación durante el entrenamiento.
+En comparación con la ejecución anterior de **30 unidades**, que mantuvo los demás parámetros
+indicados, esta tuvo mayor MAE: **0.0359 frente a 0.0210**. Es una comparación de una sola
+ejecución; se necesitarían varias semillas para valorar si la diferencia es consistente. Además, el
+conjunto de prueba se usa también como validación durante el entrenamiento.
 
 # Parte 2
 
@@ -274,17 +293,76 @@ en motores de búsqueda o aplicaciones de chat). -->
 
 <!-- Prueba diferentes frases y observa los resultados -->
 
+Al probar distintas frases, el modelo a veces predice una continuación coherente con el corpus de
+entrenamiento. Por ejemplo, para “the sun” y “the weather” predice “is”, que coincide con las
+frases originales. Sin embargo, para “make you” predice “you” en lugar de “want”, y para “I love”
+predice “a” en lugar de “hot”. Esto indica que el modelo ha aprendido patrones del corpus, pero su
+capacidad de generalización es limitada debido al tamaño reducido del conjunto de datos y la
+complejidad del lenguaje.
+
+Al generar varias palabras aparecen repeticiones y secuencias poco naturales, como “the sun is a
+there there”. Esto muestra que una primera predicción acertada no garantiza una continuación
+coherente: cada palabra generada pasa a formar parte del contexto de la siguiente predicción.
+
+También se observa una limitación con palabras fuera del vocabulario. En “the moon is glowing”, el
+tokenizer ignora “moon” y “glowing”, por lo que el modelo solo recibe “the is”. Como conclusión, el
+modelo reconoce algunos patrones del corpus pequeño, pero sus respuestas son limitadas y no
+demuestran una comprensión general del significado.
+
 ## 2. Create a longer list of phrases and see the results
 
 <!-- Crea una lista más larga de frases y observa los resultados -->
+
+Se probaron 11 frases nuevas y se observó que el modelo produce continuaciones similares incluso
+para contextos diferentes. Por ejemplo, varias frases terminan en “is a there in”, mientras que
+otras generan “feet there there there”. Estas continuaciones presentan repeticiones y no conservan
+el sentido de las frases originales.
+
+La principal limitación es el vocabulario: aunque las frases tienen entre 15 y 16 palabras, el
+modelo utilizó en promedio solo 3,6 tokens, porque el tokenizer ignora las palabras que no aparecen
+en el corpus de entrenamiento. Por ejemplo, en la frase sobre el búho se descartaron palabras como
+“owl”, “moon” y “tree”.
+
+En conclusión, ampliar la lista de prueba permite observar más casos, pero no amplía el
+conocimiento del modelo. Para mejorar su capacidad de generar continuaciones coherentes sería
+necesario entrenarlo con un corpus más amplio y representativo, y evaluar los resultados con
+ejemplos no utilizados durante el entrenamiento.
 
 ## 3. Compare the results on short vs long phrases
 
 <!-- Compara los resultados en frases cortas vs largas -->
 
+En la prueba inicial, las 8 frases cortas aportaron dos tokens cada una y ninguna fue truncada.
+Algunas obtuvieron una siguiente palabra coherente con el corpus, como “the sun” → “is”. Sin
+embargo, también hubo predicciones incorrectas y repeticiones. Las 8 frases largas aportaron en
+promedio 4,9 tokens, pero esto no garantizó mejores continuaciones: “make you want to move” generó
+“move move move move”. Además, una frase superó la capacidad de seis tokens del modelo, por lo que
+se descartó su primer token. En las 11 frases largas nuevas, muchas palabras eran desconocidas y se
+ignoraron; por eso el modelo utilizó solo 3,6 tokens en promedio. Una frase más larga no
+necesariamente proporciona más contexto útil: depende de que sus palabras estén en el vocabulario y
+de que quepan en la ventana del modelo. Esta comparación es descriptiva y no permite concluir cuál
+grupo tiene mayor precisión sin respuestas esperadas.
+
 ## 4. Why do you think Transformers are better for the same task?
 
 <!-- ¿Por qué crees que los Transformers son mejores para la misma tarea? -->
+
+Transformers: la autoatencion puede relacionar palabras distantes y permite paralelizar el
+entrenamiento, a diferencia del procesamiento secuencial de una LSTM. Con suficientes datos y
+recursos pueden capturar mejor el contexto, pero no son necesariamente mejores en este corpus
+pequeno; haria falta entrenar y evaluar ambos modelos con los mismos datos de prueba para
+comprobarlo.
+
+Los Transformers pueden ser más eficaces para predecir la siguiente palabra porque usan
+autoatención para relacionar palabras de distintas posiciones dentro del contexto. Esto les permite
+capturar dependencias lejanas sin procesar la entrada palabra por palabra, como lo hace una LSTM.
+Además, pueden paralelizar buena parte del entrenamiento. En este experimento, el modelo LSTM
+produce repeticiones y continuaciones poco coherentes. No obstante, esas dificultades también están
+relacionadas con el corpus pequeño, el vocabulario limitado y la ventana de contexto, no solamente
+con la arquitectura. Un Transformer tendría limitaciones similares si recibiera los mismos datos y
+un tratamiento equivalente de las palabras desconocidas. Por tanto, no se puede afirmar que sería
+mejor en este caso sin entrenar y evaluar ambos modelos con los mismos datos de prueba y métricas
+comparables.
 
 # Parte 3
 
@@ -312,9 +390,9 @@ y comenta al respecto. -->
 
 <!-- comentario -->
 
-<!-- [pto_2_lstm_iter_1_p]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_predictions.png 
-[pto_2_lstm_iter_2_p]: D:\deep-learning-labs\reports\figures\lstm_20261124_162339_727340_5932939d_predictions.png 
-[pto_2_lstm_iter_1_l]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_loss.png 
+<!-- [pto_2_lstm_iter_1_p]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_predictions.png
+[pto_2_lstm_iter_2_p]: D:\deep-learning-labs\reports\figures\lstm_20261124_162339_727340_5932939d_predictions.png
+[pto_2_lstm_iter_1_l]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_loss.png
 [pto_2_lstm_iter_2_l]: D:\deep-learning-labs\reports\figures\lstm_20261124_162339_727340_5932939d_loss.png
 [pto_3_lstm_p]: D:\deep-learning-labs\reports\figures\lstm_20261124_170636_822840_bc64bbf4_predictions.png
 [pto_3_lstm_l]: D:\deep-learning-labs\reports\figures\lstm_20261124_170636_822840_bc64bbf4_loss.png
