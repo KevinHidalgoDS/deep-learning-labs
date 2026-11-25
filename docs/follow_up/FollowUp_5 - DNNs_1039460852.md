@@ -367,24 +367,105 @@ of a point of interest saved in the poi.csv file. Run the following experiments 
 siguiente palabra en el nombre de un punto de interés guardado en el archivo poi.csv. Ejecute los
 siguientes experimentos e informe los resultados. -->
 
+<!-- prettier-ignore -->
+| _Contexto (palabras previas)_ | _Unidades LSTM_ | _Accuracy Inicial_ | _Accuracy Final_ | _Cambio Accuracy (p.p.)_ | _Loss Inicial_ | _Loss Final_ | _Cambio Loss_ |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 | 100 | 0.0893 | 0.2879 | +19.86 p.p. | 7.3983 | 3.0837 | -4.3145 |
+| 1 | 150 | 0.0893 | 0.2877 | +19.83 p.p. | 7.3472 | 3.0606 | -4.2866 |
+| 1 | 200 | 0.0897 | 0.2895 | +19.98 p.p. | 7.3204 | 3.0411 | -4.2793 |
+| 3 | 100 | 0.0890 | 0.5360 | +44.70 p.p. | 7.2846 | 1.6596 | -5.6251 |
+| 3 | 150 | 0.0892 | 0.6303 | +54.11 p.p. | 7.2735 | 1.0699 | -6.2036 |
+| 3 | 200 | 0.0895 | 0.6184 | +52.89 p.p. | 7.2712 | 1.1200 | -6.1512 |
+| 5 | 100 | 0.0890 | 0.6432 | +55.42 p.p. | 7.2285 | 1.1201 | -6.1084 |
+| 5 | 150 | 0.0891 | 0.6813 | +59.22 p.p. | 7.2173 | 0.9402 | -6.2771 |
+| 5 | 200 | 0.0895 | 0.6434 | +55.40 p.p. | 7.2239 | 1.1243 | -6.0996 |
+
+![pto 4][pto_4_lstm]
+
 ## 1. Train during 500 epochs, graph the results and observe how if the metric improves.
 
 <!-- Entrena durante 500 épocas, grafica los resultados y observa si la métrica mejora. -->
 
+- Evolución general de las métricas: En comparación con el entrenamiento base de 20 épocas (donde
+  el modelo apenas alcanzaba un 22.24% de precisión y una pérdida de 3.81), extender el
+  entrenamiento a 500 épocas permite una mejora sustancial. La precisión global pasa de un valor
+  inicial aleatorio (~8.9%) hasta un pico de 68.13% y la pérdida se reduce de ~7.22 a 0.94 en la
+  mejor configuración (Contexto=5, LSTM=150).
+- Dinámica de convergencia y meseta (plateau):
+  - Fase de aprendizaje acelerado (épocas 1 a 100–150): Prácticamente todo el aprendizaje útil se
+    concentra en las primeras 100 a 150 épocas. En este rango, las curvas de pérdida caen de forma
+    casi exponencial y el accuracy escala rápidamente.
+  - Estancamiento temprano en contexto corto: En las secuencias de longitud 1, el modelo alcanza su
+    límite predictivo hacia la época 40 (~28.8% de precisión) y permanece completamente plano
+    durante las 460 épocas restantes. Entrenar 500 épocas en este escenario representa un consumo
+    innecesario de cómputo.
+  - Fase tardía (épocas 200 a 500): Para contextos de 3 y 5 palabras, las curvas entran en una
+    meseta asintótica con oscilaciones debidas a la tasa de aprendizaje fija de Adam. La mejora
+    marginal después de la época 200 es inferior al 2-3% de precisión.
+- Riesgo de sobreajuste (overfitting): Al no contar con capas de regularización (Dropout o
+  Recurrent Dropout) ni un conjunto de validación separado, entrenar durante 500 épocas favorece la
+  memorización exacta de los nombres de los lugares del corpus más frecuentes, en lugar de aprender
+  patrones morfosintácticos generalizables.
+
 ## 2. Use different sentence lengths (1, 3, 5) and report.
 
 <!-- Prueba diferentes longitudes de frases (1, 3, 5) y reporta los resultados. -->
+
+La longitud del contexto de entrada es el factor más determinante en el desempeño del modelo:
+
+- Longitud 1 (Modelo de Bigramas, $P(w_t \mid w_{t-1})$):
+  - Resultados: Precisión estancada en ~28.8% y pérdida alta en ~3.06.
+  - Interpretación: Al alimentar la red con una única palabra previa, se produce una severa
+    ambigüedad condicional. Palabras muy frecuentes en nombres de lugares (como "de", "san",
+    "restaurante", "hotel", "la") tienen decenas o cientos de continuaciones posibles en el
+    vocabulario. Matemáticamente, la entropía condicional es muy alta y existe un techo teórico
+    insuperable: ninguna capacidad de red neuronal puede adivinar la siguiente palabra sin más
+    información de contexto.
+- Longitud 3 (Contexto medio, Trigramas/4-gramas):
+  - Resultados: La precisión salta a un rango de 53.60% a 63.03% (+25 a +34 p.p. respecto a
+    longitud 1) y la pérdida desciende a 1.07 – 1.66.
+  - Interpretación: Disponer de 3 palabras previas permite desambiguar la entidad (por ejemplo,
+    reconocer secuencias como "parque recreativo y..." o "centro comercial santa..."), reduciendo
+    drásticamente el espacio de búsqueda del softmax.
+- Longitud 5 (Contexto largo):
+  - Resultados: Alcanza el mejor rendimiento global con 68.13% de precisión y 0.9402 de pérdida
+    (con LSTM=150).
+  - Interpretación: Proporciona a las compuertas de memoria (forget, input, cell gates) de la LSTM
+    la información estructural necesaria para capturar dependencias a mediano plazo típicas de
+    nombres compuestos de establecimientos comerciales y geográficos.
 
 ## 3. Try different sizes of lstm modules # LSTM(50), 100, 200 and report.
 
 <!-- Modifica el tamaño de la capa LSTM (de 50 a 100 y a 200), observa los resultados en el gráfico
 y comenta al respecto. -->
 
+- Independencia de la capacidad en contexto 1: Con longitud 1, variar de 100 a 150 y a 200 unidades
+  LSTM produce exactamente la misma precisión (~28.8%) y pérdida (~3.06). Esto evidencia que
+  aumentar la capacidad del modelo no compensa la carencia de datos o contexto en la entrada.
+- Comparativa entre 100, 150 y 200 unidades:
+  - 100 unidades: Con contextos de 3 y 5, 100 unidades resultan en un rendimiento respetable (53.6%
+    y 64.3%), pero la red sufre de un leve subajuste (underfitting) de capacidad frente a la
+    diversidad del vocabulario total. Un tamaño menor (como 50 unidades) acentuaría este cuello de
+    botella representacional.
+  - 150 unidades (Punto óptimo): Logró los mejores resultados tanto en contexto 3 (63.03%) como en
+    contexto 5 (68.13%), con las curvas de convergencia más estables y la menor pérdida final
+    (0.9402).
+  - 200 unidades (Saturación y sobreparametrización): A pesar de contar con mayor número de
+    parámetros, 200 unidades obtuvo resultados ligeramente inferiores a 150 unidades (61.84% en
+    contexto 3 y 64.34% en contexto 5). En el gráfico se aprecia mayor ruido y fluctuaciones en sus
+    curvas. Esto ocurre porque un espacio paramétrico excesivo incrementa la varianza, dificulta la
+    convergencia del optimizador y favorece mínimos locales sin aportar mejoras representacionales
+    para este volumen de datos.
+- Compromiso Costo vs. Rendimiento: El tiempo de entrenamiento escaló significativamente con 200
+  unidades (tardando casi el doble que con 100 unidades por cada 500 épocas) sin retribución en
+  métricas, confirmando que 150 unidades de memoria interna es la dimensión más eficiente para este
+  dataset.
+
 ---
 
 <!-- comentario -->
 
-<!-- [pto_2_lstm_iter_1_p]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_predictions.png
+[pto_2_lstm_iter_1_p]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_predictions.png
 [pto_2_lstm_iter_2_p]: D:\deep-learning-labs\reports\figures\lstm_20261124_162339_727340_5932939d_predictions.png
 [pto_2_lstm_iter_1_l]: D:\deep-learning-labs\reports\figures\lstm_20261123_144006_371814_5b89b542_loss.png
 [pto_2_lstm_iter_2_l]: D:\deep-learning-labs\reports\figures\lstm_20261124_162339_727340_5932939d_loss.png
@@ -392,9 +473,10 @@ y comenta al respecto. -->
 [pto_3_lstm_l]: D:\deep-learning-labs\reports\figures\lstm_20261124_170636_822840_bc64bbf4_loss.png
 [pto_3_2_lstm_p]: D:\deep-learning-labs\reports\figures\lstm_20261124_173018_077529_72b788cb_predictions.png
 [pto_3_2_lstm_l]: D:\deep-learning-labs\reports\figures\lstm_20261124_173018_077529_72b788cb_loss.png
--->
+[pto_4_lstm]: D:\deep-learning-labs\reports\figures\comparacion_lstm_351658fc82a8464a882177b9cebb672f.png
 
-[pto_2_lstm_iter_1_p]: reports/figures/lstm_20261123_144006_371814_5b89b542_predictions.png
+
+<!-- [pto_2_lstm_iter_1_p]: reports/figures/lstm_20261123_144006_371814_5b89b542_predictions.png
 [pto_2_lstm_iter_2_p]: reports/figures/lstm_20261124_162339_727340_5932939d_predictions.png
 [pto_2_lstm_iter_1_l]: reports/figures/lstm_20261123_144006_371814_5b89b542_loss.png
 [pto_2_lstm_iter_2_l]: reports/figures/lstm_20261124_162339_727340_5932939d_loss.png
@@ -402,3 +484,4 @@ y comenta al respecto. -->
 [pto_3_lstm_l]: reports/figures/lstm_20261124_170636_822840_bc64bbf4_loss.png
 [pto_3_2_lstm_p]: reports/figures/lstm_20261124_173018_077529_72b788cb_predictions.png
 [pto_3_2_lstm_l]: reports/figures/lstm_20261124_173018_077529_72b788cb_loss.png
+[pto_4_lstm]: reports/figures/comparacion_lstm_351658fc82a8464a882177b9cebb672f.png -->
